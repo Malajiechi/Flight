@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+{% block title %}
+    欢迎进入航班订票系统
+{% endblock title %}
+{% block css %}
+{% endblock css %}
+{% block nav %}
+{% endblock nav %}
+
+
+{% block content %}
+    <div class="layui-row mt20">
+        <form action="" class="layui-form">
+            <input type="hidden" name="code" value="cxhangb">
+            <div class="layui-inline">
+                <select name="departureCityName" id="" lay-verify="required">
+                    <option value="">Откуда</option><!--选择始发城市-->
+                    {% for foo in departureCityNames %}
+                        <option value="{{ foo.departureCityName }}">{{ foo.departureCityName }}</option>
+                    {% endfor %}
+
+                </select>
+            </div>
+            <div class="layui-inline">
+                <select name="arrivalCityName" id="" lay-verify="required">
+                    <option value="">Куда</option><!--选择到达城市-->
+                    {% for foo in arrivalCityNames %}
+                        <option value="{{ foo.arrivalCityName }}">{{ foo.arrivalCityName }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="layui-inline">                               <!--选择出发日期-->
+                <input type="date" class="layui-input" name="sdate" placeholder="Когда"  lay-verify="required">
+            </div>
+            <div class="layui-inline">
+                <input type="submit" class="layui-btn" lay-submit lay-filter="cx_btn" value="Найти билеты"><!--查询-->
+            </div>
+        </form>
+    </div>
+
+    <div class="layui-row">
+        <table class="layui-table">
+            <colgroup>
+                <col>
+                <col width="100">
+                <col>
+                <col>
+                <col>
+                <col>
+                <col>
+            </colgroup>
+            <thead>
+            <tr>
+                <th>Рейсы</th>
+                <th>Авиакомпания</th>
+                <th>Модель</th>
+                <th>Откуда</th>
+                <th>Время отправления</th>
+                <th>Куда</th>
+                <th>Время прибытия</th>
+                <th>Цена</th>
+                <th>Купить</th>
+            </tr>
+            </thead>
+            <tbody>
+
+
+            </tbody>
+        </table>
+    </div>
+
+
+{% endblock content %}
+
+{% block jss %}
+    <script>
+        layui.define(function () {
+            form.render()
+
+            form.on('submit(cx_btn)', function (d) {
+                let parms = d.field
+                $('tbody').html('')
+                $.post(/uapi/, parms, function (res) {
+                    console.log(res);
+                    $.each(res.data, function (k, v) {
+                        let trs = '<tr>\n' +
+                            '<td>' + v.flightNo + '</td>\n' +
+                            '<td>' + v.marketAirlineName + '</td>\n' +
+                            '<td>' + v.aircraftName + '</td>\n' +
+                            '<td>' + v.departureAirportName + '</td>\n' +
+                            '<td>' + v.departureDateTime + '</td>\n' +
+                            '<td>' + v.arrivalAirportName + '</td>\n' +
+                            '<td>' + v.arrivalDateTime + '</td>\n' +
+                            '<td>' + v.price + '</td>\n' +
+                            '<td><button class="layui-btn layui-btn-xs gm_btn" id="' + v.id + '">Купить</button></td>\n' +
+                            '</tr>'
+                        $('tbody').append(trs)
+                    })
+
+
+                    return false
+                })
+                return false
+            })
+
+            $('body').on('click', '.gm_btn', function () {
+                var did = $(this).attr('id')
+                var sdate = $('[name="sdate"]').val()
+                layer.confirm('Подтвердите покупку?', function (index) {<!--确认购买-->
+                    //do something
+                    let parms = {'code': 'goumai', 'did': did, 'sdate': sdate}
+                    $.post('/uapi/', parms, function (res) {
+                        layer.msg(res.msg)
+                        layer.close(index);
+                    })
+
+
+                });
+
+            })
+        })
+    </script>
+{% endblock jss %}

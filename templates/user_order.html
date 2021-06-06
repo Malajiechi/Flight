@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+{% block title %}
+    Добро пожаловать в систему продажи билетов
+{% endblock title %}
+{% block css %}
+{% endblock css %}
+{% block nav %}
+{% endblock nav %}
+
+
+{% block content %}
+
+
+    <div class="layui-row">
+        <table class="layui-table">
+            <colgroup>
+                <col>
+                <col width="100">
+                <col>
+                <col>
+                <col>
+                <col>
+                <col>
+            </colgroup>
+            <thead>
+            <tr>
+                <th>Рейсы</th>
+                <th>Авиакомпания</th>
+                <th>Модель</th>
+                <th>Откуда</th>
+                <th>Город отправления</th>
+                <th>Время отправления</th>
+                <th>Куда</th>
+                <th>Город прибытия</th>
+                <th>Время прибытия</th>
+                <th>Дата посадки</th>
+                <th>Дата покупки</th>
+                <th>Цена</th>
+                <th>Руководить</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for foo in data %}
+                <tr>
+                    <td>{{ foo.flightNo }}</td>
+                    <td>{{ foo.marketAirlineName }}</td>
+                    <td>{{ foo.aircraftName }}</td>
+                    <td>{{ foo.departureAirportName }}</td>
+                    <td>{{ foo.departureCityName }}</td>
+                    <td>{{ foo.departureDateTime }}</td>
+                    <td>{{ foo.arrivalAirportName }}</td>
+                    <td>{{ foo.arrivalCityName }}</td>
+                    <td>{{ foo.arrivalDateTime }}</td>
+                    <td>{{ foo.sdate }}</td>
+                    <td>{{ foo.ctime }}</td>
+                    <td>{{ foo.price }}</td>
+                    <td>
+                        <div class="layui-row">                                                                 <!--改签-->
+                            <button class="layui-btn layui-btn-xs gq_btn" id="{{ foo.id }}" sdate="{{ foo.sdate }}">Смена рейса
+                            </button>
+                        </div>
+                        <div class="layui-row" style="margin-top: 5px;">                                                <!--退票-->
+                            <button class="layui-btn layui-btn-xs layui-btn-danger tp_btn" id="{{ foo.id }}">Возврат</button>
+                        </div>
+
+                    </td>
+
+                </tr>
+            {% endfor %}
+
+
+            </tbody>
+        </table>
+    </div>
+
+
+
+{% endblock content %}
+
+{% block jss %}
+    <script>
+        layui.define(function () {
+            // 改签
+            $('body').on('click', '.gq_btn', function () {
+                var oid = $(this).attr('id')
+                var sdate = $(this).attr('sdate')
+                layer.open({
+                    type: 1,
+                    content: '<input type="date" class="layui-input sdate" value="' + sdate + '">',
+                    btn: ['Да', 'Нет'],
+                    yes: function (index) {
+                        sdate = $('.sdate').val()
+                        console.log(oid, sdate);
+                        var parms = {'code': 'gaiqian', oid: oid, sdate: sdate}
+                        $.post('/uapi/', parms, function (res) {
+                            layer.msg(res.msg)
+                            layer.close(index)
+                            setTimeout(function () {
+                                window.location.reload()
+                            }, 500)
+                        })
+                    }
+                })
+            })
+
+            // 退票
+            $('body').on('click', '.tp_btn', function () {
+                var oid = $(this).attr('id')
+                var th = $(this)
+                var parms = {'code': 'tuipiao', 'oid': oid}
+                layer.confirm('Подтвердите возврат', function (index) {//确认退票
+                    //do something
+                    $.post('/uapi/', parms, function (res) {
+                        layer.msg(res.msg)
+                        layer.close(index);
+                        $(th).parent().parent().parent().remove()
+                    })
+
+                });
+            })
+        })
+    </script>
+{% endblock jss %}

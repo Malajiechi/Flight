@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}
+    Система Управления Продажами Билетов
+{% endblock title %}
+{% block css %}
+    <style>
+        .card {
+            height: 250px;
+        }
+
+        .layui-form-item > input {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .layui-form-item > button {
+            margin-top: 20px;
+        }
+    </style>
+{% endblock css %}
+{% block nav %}
+{% endblock nav %}
+{% block usernav %}
+{% endblock usernav %}
+
+{% block content %}
+    <div class="layui-row">
+        <div class="layui-card layui-col-md4 layui-col-md-offset4 card" style="margin-top: 15%;">
+            <div class="layui-card-header" style="background: #eee;text-align: center;font-size: 16px;font-weight:bolder;">Система Управления Продажами Билетов</div>
+            <div class="layui-card-body">
+                <form action="" class="layui-form" lay-filter="form_login" id="login">
+                    <div class="layui-form-item">
+                        <input type="text" class="layui-input" name="user" placeholder="Имя">
+                        <input type="password" class="layui-input" name="pwd" placeholder="Пароль">
+                        <button class="layui-btn layui-col-md12 layui-bg-cyan" lay-submit lay-filter="login_btn">Войти</button>
+
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block jss %}
+    <script>
+        layui.define(function () {
+
+
+            // 登录
+            form.on('submit(login_btn)', function (data) {
+                console.log(data);
+                var parms = data.field
+                goto('/admin/admin_index')
+                return false
+            })
+
+        })
+    </script>
+{% endblock jss %}

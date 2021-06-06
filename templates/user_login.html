@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+{% block title %}
+    Добро пожаловать в систему продажи билетов
+{% endblock title %}
+{% block css %}
+    <style>
+        .card {
+            height: 330px;
+        }
+
+        .layui-form-item > input {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .layui-form-item > button {
+            margin-top: 20px;
+        }
+    </style>
+{% endblock css %}
+{% block nav %}
+{% endblock nav %}
+{% block usernav %}
+{% endblock usernav %}
+
+{% block content %}
+    <div class="layui-row">
+        <div class="layui-card layui-col-md6 layui-col-md-offset3 card" style="margin-top: 15%;">
+            <div class="layui-card-header" style="background: #009587;color: #eeeeee; line-height: 100px;height: 100px;text-align: center;font-size: 24px;font-weight:bolder;">Система продажи билетов</div>
+            <div class="layui-card-body">
+                <form action="" class="layui-form" lay-filter="form_login" id="login">
+                    <input type="hidden" name="code" value="user_login">
+                    <div class="layui-form-item">
+                        <input type="text" class="layui-input" name="user" placeholder="Имя">
+                        <input type="password" class="layui-input" name="pwd" placeholder="Пароль">
+                        <button class="layui-btn layui-col-md12" lay-submit lay-filter="login_btn">Войти</button>
+                        <div class="layui-col-md12" style="margin-top: 10px; text-align: right">
+                            <a href="javascript:;" class="zc">Зарегистрировать</a><!--注册-->
+                        </div>
+                    </div>
+                </form>
+                <form action="" class="layui-form layui-hide" lay-filter="form_reg" id="reg">
+                    <input type="hidden" name="code" value="user_reg">
+                    <div class="layui-form-item">
+                        <input type="text" class="layui-input" name="user" placeholder="Имя">
+                        <input type="password" class="layui-input" name="pwd" placeholder="Пароль">               <!--注册-->
+                        <button class="layui-btn layui-col-md12 layui-bg-orange" lay-submit lay-filter="reg_btn">Зарегистрировать
+                        </button>
+                        <div class="layui-col-md12" style="margin-top: 10px; text-align: right">
+                            <a href="javascript:;" class="yyzh">Уже есть аккаунт</a> <!--用户已存在-->
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block jss %}
+    <script>
+        layui.define(function () {
+            // 注册页面
+            $('.zc').on('click', function () {
+                $('#login').addClass('layui-hide')
+                $('#reg').removeClass('layui-hide')
+            })
+
+            // 登录页面
+            $('.yyzh').on('click', function () {
+                $('#login').removeClass('layui-hide')
+                $('#reg').addClass('layui-hide')
+            })
+
+            // 登录
+            form.on('submit(login_btn)', function (data) {
+                var parms = data.field
+                console.log(parms);
+                $.post('/uapi/', parms, function (res) {
+                    layer.msg(res.msg)
+
+                    if (res.code === 0) {
+                        goto('/user/user_index')
+                    }
+                })
+
+                return false
+            })
+
+            // 注册
+            form.on('submit(reg_btn)', function (data) {
+                console.log(data);
+                var parms = data.field
+                console.log(parms);
+                $.post('/uapi/', parms, function (res) {
+                    layer.msg(res.msg)
+
+                })
+                return false
+            })
+        })
+    </script>
+{% endblock jss %}

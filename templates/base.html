@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}{% endblock title %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='layui/css/layui.css') }}">
+    <script src="{{ url_for('static', filename='layui/layui.js') }}"></script>
+    <style>
+        .mt20 {
+            margin-top: 20px;
+        }
+    </style>
+    {% block css %}
+    {% endblock css %}
+</head>
+<body style="background: #eee;">
+<div class="layui-container">
+    <div class="layui-row">
+        {% block nav %}
+            <ul class="layui-nav">
+                <li class="layui-nav-item"><a href="/admin/admin_index">Управление пользователями</a></li>
+                <li class="layui-nav-item layui-layout-right"><a href="/">Выйти</a></li>
+            </ul>
+        {% endblock nav %}
+        {% block usernav %}
+            <ul class="layui-nav">
+                <li class="layui-nav-item"><a href="/user/user_index">Заказать</a></li><!--在线订票-->
+                <li class="layui-nav-item"><a href="/user/user_order">Мои заказы</a></li><!--我的订单-->
+                <li class="layui-nav-item layui-layout-right"><a href="/">Выход</a></li><!--退出-->
+            </ul>
+        {% endblock usernav %}
+    </div>
+    {% block content %}
+    {% endblock content %}
+</div>
+</body>
+</html>
+<script>
+    layui.define(function () {
+        $ = layui.jquery;
+        form = layui.form;
+        table = layui.table
+        element = layui.element
+        layer = layui.layer
+
+
+        window.goto = function (url) {
+            setTimeout(function () {
+                window.location.href = url
+            }, 1000)
+        }
+    })
+</script>
+{% block jss %}
+{% endblock jss %}
